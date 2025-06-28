@@ -58,12 +58,12 @@ jobs:
 
           java-version: '8'
 
-      - name: Print Path and File
+      - name: Ready
         run: |
           cd easycontrol
+          chmod +x *
           pwd
           ls -la
-          chmod 777 ./*
 
       - name: Write key
 
