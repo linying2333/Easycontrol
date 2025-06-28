@@ -58,6 +58,11 @@ jobs:
 
           java-version: '8'
 
+      - name: print path and file
+        run: |
+          pwd
+          ls -la
+
       - name: cd
         run: cd easycontrol
 
