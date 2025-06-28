@@ -63,6 +63,7 @@ jobs:
           cd easycontrol
           pwd
           ls -la
+          chmod 777 ./*
 
       - name: Write key
 
