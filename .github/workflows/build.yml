@@ -61,6 +61,8 @@ jobs:
       - name: Ready
         run: |
           cd easycontrol
+          # fix windows /r for unix
+          tr -d '\r' < gradlew > gradlew 
           chmod +x *
           pwd
           ls -la
