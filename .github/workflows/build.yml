@@ -124,6 +124,10 @@ jobs:
       - name: Gradle prebuild
 
         run: |
+          cd easycontrol
+          chmod +x *
+          pwd
+          ls -la
 
           echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
 
