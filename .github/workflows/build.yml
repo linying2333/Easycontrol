@@ -67,6 +67,14 @@ jobs:
           cd easycontrol
           ./gradlew prebuild
 
+      - name: Build server
+        id: buildServer
+        run: |
+          cd easycontrol/server
+          ./gradlew build
+          mkdir -p ../app/src/main/res/raw
+          cp build/outputs/server-bin ../app/src/main/res/raw/easycontrol_server
+
       - name: Build release
         id: buildRelease
         run: |
