@@ -106,6 +106,19 @@
         android:text="@string/active_button"
         android:textColor="@color/onButton"
         android:textSize="@dimen/smallFont" />
+
+      <Button
+        android:id="@+id/closeButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/background_cron"
+        android:backgroundTint="@color/button"
+        android:gravity="center"
+        android:text="@string/close_button"
+        android:textColor="@color/onButton"
+        android:textSize="@dimen/smallFont" />
     </LinearLayout>
   </ScrollView>
 </LinearLayout>
