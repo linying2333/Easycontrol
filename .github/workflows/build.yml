@@ -65,7 +65,6 @@ jobs:
       - name: Gradle prebuild
         run: |
           cd easycontrol
-          echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
           ./gradlew prebuild
 
       - name: Build release
