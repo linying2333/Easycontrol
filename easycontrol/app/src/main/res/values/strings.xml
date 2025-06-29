@@ -43,6 +43,7 @@
     * 邮箱：mingzhixian@outlook.com \n
     * QQ：1963402801
   </string>
+  <string name="close_button">关闭</string>
 
   <!-- 设备添加页面 -->
   <string name="device_uuid">点击复制设备ID</string>
