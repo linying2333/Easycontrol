@@ -1,0 +1,86 @@
+name: build on ubuntu
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+    if: ${{ !startsWith(github.event.head_commit.message, '[skip ci]') }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Gradle wrapper validation
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Ready
+        run: |
+          cd easycontrol
+          chmod +x *
+          pwd
+          ls -la
+
+      - name: Write key
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        working-directory: ./easycontrol
+        run: |
+          echo buildWithGitSuffix=true >> local.properties
+          echo storePassword='${{ secrets.KEY_STORE_PASSWORD }}' >> local.properties
+          echo keyAlias='${{ secrets.ALIAS }}' >> local.properties
+          echo keyPassword='${{ secrets.ALIAS_KEY_PASSWORD }}' >> local.properties
+          echo fileDir=`pwd`/key.jks >> local.properties
+          echo "${{ secrets.KEY_STORE }}" | base64 --decode > key.jks
+
+      - name: Validate key
+        working-directory: ./easycontrol
+        run: |
+          keytool -list -keystore key.jks -storepass ${{ secrets.KEY_STORE_PASSWORD }} -alias ${{ secrets.ALIAS }} -storetype JKS
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+
+      - name: Cache gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Gradle prebuild
+        working-directory: ./easycontrol
+        run: |
+          ./gradlew prebuild
+
+      - name: Build app
+        id: buildApp
+        working-directory: ./easycontrol
+        run: |
+          ./gradlew :server:copyRelease --stacktrace
+          ./gradlew :app:assembleDebug --stacktrace
+          echo "apkName=$(ls app/build/outputs/apk/debug/*.apk | awk -F '(/|.apk)' '{print $5}')" >> $GITHUB_OUTPUT
+
+      - name: Upload apk
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.buildApp.outputs.apkName }}
+          path: "easycontrol/app/build/outputs/apk/debug/*.apk"
