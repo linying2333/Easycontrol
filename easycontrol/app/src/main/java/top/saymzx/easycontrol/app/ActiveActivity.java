@@ -26,7 +26,7 @@ public class ActiveActivity extends Activity {
     activityActiveBinding = ActivityActiveBinding.inflate(this.getLayoutInflater());
     setContentView(activityActiveBinding.getRoot());
     // 取消激活
-    if (AppData.setting.getIsActive()) deactivate();
+    // if (AppData.setting.getIsActive()) deactivate();
     setButtonListener();
     // 绘制UI
     drawUi();
@@ -39,6 +39,14 @@ public class ActiveActivity extends Activity {
 
   private void setButtonListener() {
     activityActiveBinding.active.setOnClickListener(v -> {
+      // 直接激活成功
+      finish();
+      AppData.setting.setIsActive(true);
+      PublicTools.startUrl(this, "https://gitee.com/mingzhixianweb/easycontrol/blob/master/HOW_TO_USE.md");
+      PublicTools.logToast("active", getString(R.string.toast_success), true);
+
+      // 原激活验证代码
+      /*
       String activeKey = String.valueOf(activityActiveBinding.key.getText());
       AppData.setting.setActiveKey(activeKey);
       Pair<ItemLoadingBinding, Dialog> loading = ViewTools.createLoading(this);
@@ -55,11 +63,18 @@ public class ActiveActivity extends Activity {
           } else PublicTools.logToast("active", getString(R.string.toast_fail), true);
         });
       }).start();
+      */
     });
   }
 
   // 取消激活
   private void deactivate() {
+    // 直接取消激活
+    AppData.setting.setIsActive(false);
+    PublicTools.logToast("deactivate", getString(R.string.toast_success), true);
+
+    // 原取消激活代码
+    /*
     Pair<ItemLoadingBinding, Dialog> loading = ViewTools.createLoading(this);
     loading.second.show();
     new Thread(() -> {
@@ -72,9 +87,11 @@ public class ActiveActivity extends Activity {
         } else PublicTools.logToast("deactivate", getString(R.string.toast_fail), true);
       });
     }).start();
+    */
   }
 
   @Override
   public void onBackPressed() {
+    // 禁止返回对激活页面进行关闭
   }
 }
