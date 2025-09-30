@@ -91,14 +91,14 @@ jobs:
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.buildDebug.outputs.debugApkName }}-debug
+          name: ${{ steps.buildDebug.outputs.debugApkName }}
           path: "easycontrol/app/build/outputs/apk/debug/*.apk"
 
       - name: Upload Release APK
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.buildRelease.outputs.releaseApkName }}-release
+          name: ${{ steps.buildRelease.outputs.releaseApkName }}
           path: "easycontrol/app/build/outputs/apk/release/*.apk"
 
       - name: Upload Release Mapping
